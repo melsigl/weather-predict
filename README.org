@@ -1,0 +1,15 @@
+#+title: Predict Weather: Temperature Forecast
+
+* Datasource
+We will use daily weather data curated and provided by German
+Meteorological Service (Deutscher Wetterdienst, DWD). All climate
+related data are publicly available either through [[https://opendata.dwd.de/climate_environment/CDC/][HTTPS]] or [[ftp://opendata.dwd.de/climate_environment/CDC/][FTP]].
+
+To download specific climate data use script
+=prepare_aml_workspace.py=. This script downloads, extracts, deletes zip
+file, performs minimal data preparation, and uploads those csv files
+to your AML workspace, i. e. it registers every csv file as a single
+dataset. To perform these operations you need to download your AML
+workspace configuration and place it in the root of this project.
+
+Data description (for daily data) is available in [[https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/historical/BESCHREIBUNG_obsgermany_climate_daily_kl_historical_de.pdf][German]] and [[https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/historical/DESCRIPTION_obsgermany_climate_daily_kl_historical_en.pdf][English]].

@@ -1,0 +1,14 @@
+azureml-core
+azureml-dataset-runtime
+azureml-pipeline
+azureml-widgets
+pandas==1.1.1
+numpy
+sklearn
+tensorflow
+unidecode
+statsmodels
+matplotlib
+seaborn
+ipython
+jupyter
