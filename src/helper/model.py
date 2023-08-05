@@ -23,11 +23,11 @@ class LogMetricToAzure(Callback):
 
 def get_metrics():
     return [
-        tf.metrics.MeanSquaredError(name='mse'),
-        tf.metrics.MeanAbsoluteError(name='mae'),
-        tf.metrics.MeanAbsolutePercentageError('mape'),
-        tf.metrics.RootMeanSquaredError(name='rmse'),
-        tf.metrics.MeanSquaredLogarithmicError(name='msle')
+        tf.metrics.MeanSquaredError(name="mse"),
+        tf.metrics.MeanAbsoluteError(name="mae"),
+        tf.metrics.MeanAbsolutePercentageError("mape"),
+        tf.metrics.RootMeanSquaredError(name="rmse"),
+        tf.metrics.MeanSquaredLogarithmicError(name="msle"),
     ]
 
 
@@ -36,33 +36,32 @@ def get_callbacks(run, patience=10):
     if run is not None:
         callbacks.append(LogMetricToAzure(run))
     if patience is not None:
-        callbacks.append(EarlyStopping(monitor='val_mae', patience=patience))
+        callbacks.append(EarlyStopping(monitor="val_mae", patience=patience))
     return callbacks
 
 
 def get_optimizer(name, learning_rate):
-    if name.upper() == 'NADAM':
+    if name.upper() == "NADAM":
         return tf.optimizers.Nadam(learning_rate=learning_rate)
     else:
-        raise NotImplementedError('Specified Optimizer Name not Implemented')
+        raise NotImplementedError("Specified Optimizer Name not Implemented")
 
 
-def compile_fit(model, train, val, patience, epochs, optimizer_name, learning_rate, run):
+def compile_fit(
+    model, train, val, patience, epochs, optimizer_name, learning_rate, run
+):
     model.compile(
         optimizer=get_optimizer(name=optimizer_name, learning_rate=learning_rate),
         loss=tf.keras.losses.MeanAbsoluteError(),
-        metrics=get_metrics()
+        metrics=get_metrics(),
     )
     model.summary()
     history = model.fit(
         x=train,
         epochs=epochs,
         validation_data=val,
-        callbacks=get_callbacks(
-            patience=patience,
-            run=run
-        ),
-        verbose=2  # 0 = silent, 1 = progress bar, 2 = one line per epoch
+        callbacks=get_callbacks(patience=patience, run=run),
+        verbose=2,  # 0 = silent, 1 = progress bar, 2 = one line per epoch
     )
     return history
 
@@ -70,7 +69,7 @@ def compile_fit(model, train, val, patience, epochs, optimizer_name, learning_ra
 def get_model(train, recurrent_model_type, recurrent_units):
     x, _ = train[0]
     model = Sequential()
-    if recurrent_model_type.upper() == 'LSTM':
+    if recurrent_model_type.upper() == "LSTM":
         model.add(
             LSTM(
                 recurrent_units,
@@ -80,26 +79,28 @@ def get_model(train, recurrent_model_type, recurrent_units):
                 recurrent_dropout=0.0,
                 use_bias=True,
                 unroll=False,
-                return_sequences=False
+                return_sequences=False,
             )
         )
-    elif recurrent_model_type.upper() == 'GRU':
+    elif recurrent_model_type.upper() == "GRU":
         # TODO
         pass
-    elif recurrent_model_type.upper() == 'RNN':
+    elif recurrent_model_type.upper() == "RNN":
         # TODO
         pass
     else:
-        raise ValueError('Specify an appropriate recurrent model type: LSTM, GRU, or RNN')
-    model.add(Dense(4, activation='elu'))
+        raise ValueError(
+            "Specify an appropriate recurrent model type: LSTM, GRU, or RNN"
+        )
+    model.add(Dense(4, activation="relu"))
     model.add(Dense(1))
     return model
 
 
 def load_data(path, name):
     return {
-        key: np.load(f'{os.path.join(path, name)}_{key}.npy')
-        for key in ['train', 'val', 'test']
+        key: np.load(f"{os.path.join(path, name)}_{key}.npy")
+        for key in ["train", "val", "test"]
     }
 
 
@@ -110,7 +111,7 @@ def get_data_generators(data, sequence_length, batch_size):
             targets=dataset[:, -1],
             length=sequence_length,
             batch_size=batch_size,
-            shuffle=True if key != 'test' else False
+            shuffle=True if key != "test" else False,
         )
         for key, dataset in data.items()
     }
